@@ -1,0 +1,65 @@
+pipeline {
+    agent any
+    tools {
+        gradle "Gradle"
+    }
+    environment {
+        RENDER_DEPLOYMENT_URL = "https://api.render.com/deploy/srv-cvkgnss9c44c73fptqe0?key=itG9ad9oBpQ"
+        SLACK_WEBHOOK_URL = "https://hooks.slack.com/services/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"
+    }
+    
+    stages {
+        stage("Cloning repository") {
+            steps {
+                git branch: "master", url: "https://github.com/MiriamNyaga/gallery.git"
+            }
+        }
+        
+        stage("Building code") {
+            steps {
+                sh "gradle build"  
+            }
+        }
+        
+        stage("Testing code") {
+            steps {
+                sh "gradle test"  
+            }
+        }
+        
+        stage("Deploying to Render") {
+            steps {
+                echo "Triggering deployment on Render..."
+                sh "curl -X GET '${env.RENDER_DEPLOYMENT_URL}'"
+                echo "Deployment triggered successfully!"
+            }
+        }
+    }
+
+    post {
+        success {
+            script {
+                def buildID = env.BUILD_ID
+                def message = "Yes* Build #${buildID}* deployed successfully!\n View it here: ${env.RENDER_DEPLOYMENT_URL}"
+                
+                sh """
+                curl -X POST -H 'Content-type: application/json' --data '{"text": "${message}"}' ${env.SLACK_WEBHOOK_URL}
+                """
+            }
+        }
+        failure {
+            script {
+                def buildID = env.BUILD_ID
+                def message = "No* Build #${buildID}* failed. Please check Jenkins logs."
+                
+                sh """
+                curl -X POST -H 'Content-type: application/json' --data '{"text": "${message}"}' ${env.SLACK_WEBHOOK_URL}
+                """
+            }
+        }
+    }
+}
+
+
+
+
