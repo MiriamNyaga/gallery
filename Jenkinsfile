@@ -1,7 +1,7 @@
 pipeline{
     agent any
     tools {
-        gradle "gradle"
+        gradle "Gradle"
     }
     stages{
         stage("Cloning repository"){
