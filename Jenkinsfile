@@ -6,7 +6,7 @@ pipeline{
     stages{
         stage("Cloning repository"){
             steps{
-                git branch:"master", url:"https://github.com/kadimasum/java-todo.git"
+                git branch:"master", url:"https://github.com/MiriamNyaga/gallery.git"
             }
         }
         
