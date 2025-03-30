@@ -1,23 +1,30 @@
-pipeline {
+pipeline{
     agent any
-    
-    stages {
-        stage("Cloning repository") {
-            steps {
-                git branch: 'master', url: 'https://github.com/MiriamNyaga/gallery.git'
+    tools {
+        gradle "gradle"
+    }
+    stages{
+        stage("Cloning repository"){
+            steps{
+                git branch:"master", url:"https://github.com/MiriamNyaga/gallery.git"
             }
         }
         
-        stage("Building code") {
-            steps {
-                sh "./gradlew build"
+        stage("Building code"){
+            steps{
+                sh "gradle build"
             }
         }
         
-        stage("Testing code") {
-            steps {
-                sh "./gradlew test"
+        stage("Testing code"){
+            steps{
+                sh "gradle test"
             }
         }
     }
 }
+
+
+
+
+
