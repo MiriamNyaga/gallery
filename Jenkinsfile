@@ -1,6 +1,8 @@
 pipeline{
     agent any
-   
+    tools {
+        none "None"
+    }
     stages{
         stage("Cloning repository"){
             steps{
